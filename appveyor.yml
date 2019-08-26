@@ -2,15 +2,17 @@ version: 1.0.{build}
 environment:
     GAUGE_TELEMETRY_ENABLED: false
     GAUGE_PREFIX: C:\Program Files\Gauge\bin
+    GAUGE_PYTHON_COMMAND: python3
 install:
     - git submodule init
     - git submodule update
 build_script:
-    - cmd: python --version
-    - cmd: pip --version
+    -
+    - cmd: python3 --version
+    - cmd: pip3 --version
 
-    - cmd: pip install -r requirements.txt
-    - cmd: python build.py --test
+    - cmd: pip3 install -r requirements.txt
+    - cmd: python3 build.py --test
     - ps: >-
           Invoke-WebRequest -Uri "https://raw.githubusercontent.com/getgauge/infrastructure/master/nightly_scripts/install_latest_gauge_nightly.ps1" -OutFile install_latest_gauge_nightly.ps1
 
@@ -20,9 +22,9 @@ build_script:
 
           Write-Host "PATH : $($env:PATH)"
 
-    - cmd: python build.py --install
+    - cmd: python3 build.py --install
     - cmd: cd dist
-    - cmd: for %%f in (getgauge*) do pip install "%%f" --upgrade
+    - cmd: for %%f in (getgauge*) do pip3 install "%%f" --upgrade
     - cmd: cd ..
     - ps: >-
           gauge -v
