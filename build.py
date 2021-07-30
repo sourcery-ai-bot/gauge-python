@@ -35,22 +35,19 @@ def install():
 
 
 def create_setup_file():
-    tmpl = open("setup.tmpl", "r")
-    setup = open("setup.py", "w+")
-    v = get_version()
-    setup.write(tmpl.read().format(
-        v, "{\n\t\t':python_version == \"2.7\"': ['futures']\n\t}"))
-    setup.close()
-    tmpl.close()
+    with open("setup.tmpl", "r") as tmpl:
+        with open("setup.py", "w+") as setup:
+            v = get_version()
+            setup.write(tmpl.read().format(
+                v, "{\n\t\t':python_version == \"2.7\"': ['futures']\n\t}"))
 
 
 def generate_package():
     shutil.rmtree('dist', True)
     print('Creating getgauge package.')
     create_setup_file()
-    fnull = open(os.devnull, 'w')
-    call([sys.executable, 'setup.py', 'sdist'], stdout=fnull, stderr=fnull)
-    fnull.close()
+    with open(os.devnull, 'w') as fnull:
+        call([sys.executable, 'setup.py', 'sdist'], stdout=fnull, stderr=fnull)
 
 
 def create_zip():
@@ -119,16 +116,15 @@ def run_tests():
 def main():
     if len(sys.argv) < 2:
         print(usage)
+    elif sys.argv[1] == '--dist':
+        create_zip()
+        generate_package()
     else:
-        if sys.argv[1] == '--dist':
-            create_zip()
-            generate_package()
-        else:
-            exit_code = run_tests()
-            if exit_code != 0:
-                sys.exit(exit_code)
-            elif sys.argv[1] == '--install':
-                install()
+        exit_code = run_tests()
+        if exit_code != 0:
+            sys.exit(exit_code)
+        elif sys.argv[1] == '--install':
+            install()
 
 
 if __name__ == '__main__':

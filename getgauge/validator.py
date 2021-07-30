@@ -26,9 +26,17 @@ def validate_step(request):
 
 def _duplicate_impl_suggestion(request):
     text = request.stepText.replace('{}', '<arg>')
-    return "Multiple implementations found for `{}`\n".format(text) + '\n'.join(
-        ['{}:{}\n''{}'.format(info.file_name, info.span['start'], _format_impl(info.impl.__str__())) for info in
-         registry.get_infos_for(request.stepText)])
+    return "Multiple implementations found for `{}`\n".format(
+        text
+    ) + '\n'.join(
+        '{}:{}\n'
+        '{}'.format(
+            info.file_name,
+            info.span['start'],
+            _format_impl(info.impl.__str__()),
+        )
+        for info in registry.get_infos_for(request.stepText)
+    )
 
 
 def _impl_suggestion(step_value):
@@ -43,7 +51,9 @@ def {}({}):
 
 
 def _format_params(params):
-    return ', '.join([p if _is_valid(p) else 'arg' + str(i + 1) for i, p in enumerate(params)])
+    return ', '.join(
+        p if _is_valid(p) else 'arg' + str(i + 1) for i, p in enumerate(params)
+    )
 
 
 def _format_impl(impl):

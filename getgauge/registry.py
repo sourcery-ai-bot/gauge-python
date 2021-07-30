@@ -171,35 +171,34 @@ class Registry(object):
     def get_step_positions(self, file_name):
         positions = []
         for step, infos in self.__steps_map.items():
-            positions = positions + [{'stepValue': step, 'span': i.span}
+            positions += [{'stepValue': step, 'span': i.span}
                                      for i in infos if i.file_name == file_name]
         return positions
 
     def _get_all_hooks(self, file_name):
         all_hooks = []
         for hook in self.hooks:
-            all_hooks = all_hooks + \
-                        [h for h in getattr(self, "__{}".format(hook))
+            all_hooks += [h for h in getattr(self, "__{}".format(hook))
                          if h.file_name == file_name]
         return all_hooks
 
     def get_all_methods_in(self, file_name):
         methods = []
         for _, infos in self.__steps_map.items():
-            methods = methods + [i for i in infos if i.file_name == file_name]
+            methods += [i for i in infos if i.file_name == file_name]
         return methods + self._get_all_hooks(file_name)
 
     def is_file_cached(self, file_name):
-        for _, infos in self.__steps_map.items():
-            if any(i.file_name == file_name for i in infos):
-                return True
-        return False
+        return any(
+            any(i.file_name == file_name for i in infos)
+            for _, infos in self.__steps_map.items()
+        )
 
     def remove_steps(self, file_name):
         new_map = {}
         for step, infos in self.__steps_map.items():
             filtered_info = [i for i in infos if i.file_name != file_name]
-            if len(filtered_info) > 0:
+            if filtered_info:
                 new_map[step] = filtered_info
         self.__steps_map = new_map
 
@@ -263,9 +262,8 @@ class ScreenshotsStore:
         if not registry.is_screenshot_writer:
             screenshot_file = _uniqe_screenshot_file()
             content = registry.screenshot_provider()()
-            file = open(screenshot_file, "wb")
-            file.write(content)
-            file.close()
+            with open(screenshot_file, "wb") as file:
+                file.write(content)
             return os.path.basename(screenshot_file)
         screenshot_file = registry.screenshot_provider()()
         if(not os.path.isabs(screenshot_file)):

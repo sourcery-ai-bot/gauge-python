@@ -42,9 +42,8 @@ def copy_skel_files():
         shutil.copytree(os.path.join(SKEL,path.basename(impl_dirs[0]) ), impl_dirs[0])
         logger.info('create  {}'.format(os.path.join(env_dir, PYTHON_PROPERTIES)))
         shutil.copy(os.path.join(SKEL, PYTHON_PROPERTIES), env_dir)
-        f = open(requirements_file, 'w')
-        f.write('getgauge==' + _get_version())
-        f.close()
+        with open(requirements_file, 'w') as f:
+            f.write('getgauge==' + _get_version())
     except:
         logger.fatal('Exception occurred while copying skel files.\n{}.'.format(traceback.format_exc()))
 

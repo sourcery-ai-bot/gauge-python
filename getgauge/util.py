@@ -27,16 +27,18 @@ def get_impl_files():
     for step_impl_dir in step_impl_dirs:
         for root, _, files in os.walk(step_impl_dir):
             for file in files:
-                if file.endswith('.py') and '__init__.py' != os.path.basename(file):
+                if (
+                    file.endswith('.py')
+                    and os.path.basename(file) != '__init__.py'
+                ):
                     file_list.append(os.path.join(root, file))
     return file_list
 
 
 def read_file_contents(file_name):
     if os.path.isfile(file_name):
-        f = open(file_name)
-        content = f.read().replace('\r\n', '\n')
-        f.close()
+        with open(file_name) as f:
+            content = f.read().replace('\r\n', '\n')
         return content
     return None
 
@@ -46,6 +48,5 @@ def get_file_name(prefix='', counter=0):
     file_name = os.path.join(get_step_impl_dirs()[0], name)
     if not os.path.exists(file_name):
         return file_name
-    else:
-        counter = counter + 1
-        return get_file_name('_{}'.format(counter), counter)
+    counter = counter + 1
+    return get_file_name('_{}'.format(counter), counter)

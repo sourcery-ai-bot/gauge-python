@@ -356,11 +356,10 @@ def assert_default_vowels(arg0, arg1):
         self.assertIn('arg0, arg1', diff_contents)
 
     def getActualText(self):
-        _file = open(RefactorTests.path, 'r+')
-        actual_data = _file.read()
-        _file.seek(0)
-        _file.truncate()
-        _file.write(RefactorTests.data)
-        _file.close()
+        with open(RefactorTests.path, 'r+') as _file:
+            actual_data = _file.read()
+            _file.seek(0)
+            _file.truncate()
+            _file.write(RefactorTests.data)
         return actual_data
 

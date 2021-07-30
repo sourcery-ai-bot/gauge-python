@@ -110,7 +110,7 @@ class Table:
             for i, value in enumerate(values):
                 table[i] = table[i] or []
                 table[i].append(value)
-        return "\n".join(["|{}|".format("|".join(row)) for row in table])
+        return "\n".join("|{}|".format("|".join(row)) for row in table)
 
     def __eq__(self, other):
         return self.__str__() == other.__str__()

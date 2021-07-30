@@ -72,7 +72,7 @@ class Parser(object):
                 step = args[0].value.to_python()
             except (ValueError, SyntaxError):
                 pass
-            if isinstance(step, str) or isinstance(step, list):
+            if isinstance(step, (str, list)):
                 return step
             logger.error("Decorator step accepts either a string or a list of \
                 strings - {0}".format(self.file_path))

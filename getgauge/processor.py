@@ -58,10 +58,13 @@ def process_step_names_request():
 
 
 def process_execute_step_request(request):
-    params = []
-    for p in request.parameters:
-        params.append(Table(p.table) if p.parameterType in [
-            Parameter.Table, Parameter.Special_Table] else p.value)
+    params = [
+        Table(p.table)
+        if p.parameterType in [Parameter.Table, Parameter.Special_Table]
+        else p.value
+        for p in request.parameters
+    ]
+
     response = create_execution_status_response()
     info = registry.get_info_for(request.parsedStepText)
     execute_method(params, info, response, registry.is_continue_on_failure)
@@ -175,7 +178,7 @@ def _load_from_disk(file_path):
 def process_cache_file_request(request):
     file = request.filePath
     status = request.status
-    if status == CacheFileRequest.CHANGED or status == CacheFileRequest.OPENED:
+    if status in [CacheFileRequest.CHANGED, CacheFileRequest.OPENED]:
         reload_steps(file, request.content)
     elif status == CacheFileRequest.CREATED:
         if not registry.is_file_cached(file):

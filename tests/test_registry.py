@@ -112,14 +112,18 @@ class RegistryTests(unittest.TestCase):
 
         self.assertTrue(registry.has_multiple_impls(parsed_step_text))
         self.assertEqual(
-            set([info.span['start']
-                 for info in registry.get_infos_for(parsed_step_text)]),
-            {infos[0]['line'], infos[1]['line']})
+            {
+                info.span['start']
+                for info in registry.get_infos_for(parsed_step_text)
+            },
+            {infos[0]['line'], infos[1]['line']},
+        )
+
 
         self.assertEqual(
-            set([info.step_text
-                 for info in registry.get_infos_for(parsed_step_text)]),
-            {infos[0]['text'], infos[1]['text']})
+            {info.step_text for info in registry.get_infos_for(parsed_step_text)},
+            {infos[0]['text'], infos[1]['text']},
+        )
 
     def test_Registry_before_suite(self):
         infos = ['before suite func', 'before suite func1']
